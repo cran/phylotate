@@ -1,0 +1,16 @@
+ffcf47091157066d086d55110317e178 *DESCRIPTION
+a6032768a0134c05ea493eab699d9a87 *LICENSE
+13487f9a01bef87d828168ce482bfa11 *NAMESPACE
+d32da57737628feed85b136ae3247421 *R/format.R
+252f9cb815289169dda8c20d2dd4ef79 *R/newick.R
+949f903f6f596262337ce5ef4520564c *R/nexus.R
+7df29b6007265e452473e514888fe99f *R/tokenize.R
+9aa55e1422d725116a4bdc2117d38733 *R/utility.R
+ec3a853d6c8ba26f10d46b81b4e2cea6 *data/finches.RData
+fc6808b7609a833d39ca972ba36d7768 *man/finches.Rd
+b0e55e11cb51470050be887c5cfaf8d7 *man/parse_annotated.Rd
+71a7326d4362580000e75640eca1c48b *man/phylotate-package.Rd
+0a6b2d495ed52344982a9d53c49f594b *man/print_annotated.Rd
+53dfa7e3a002dea801570827c6f6bbb9 *man/read_annotated.Rd
+94fef8036a6fed827485a801b3823c4f *man/write_annotated.Rd
+577c3dc0b907bb6718f61207f981ca86 *tests/round_trip.R
