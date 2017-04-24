@@ -1,7 +1,7 @@
 Package: phylotate
 Title: Phylogenies with Annotations
-Version: 1.0
-Date: 2017-01-03
+Version: 1.1
+Date: 2017-04-24
 Author: Daniel Beer
 Maintainer: Daniel Beer <dlbeer@gmail.com>
 Description: Functions to read and write APE-compatible phylogenetic
@@ -11,6 +11,6 @@ Suggests: ape
 License: MIT + file LICENSE
 Collate: 'utility.R' 'tokenize.R' 'newick.R' 'nexus.R' 'format.R'
 NeedsCompilation: no
-Packaged: 2017-01-03 07:23:32 UTC; dlbeer
+Packaged: 2017-04-23 21:56:12 UTC; dlbeer
 Repository: CRAN
-Date/Publication: 2017-01-03 22:27:00
+Date/Publication: 2017-04-24 05:50:30 UTC

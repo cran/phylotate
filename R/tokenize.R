@@ -83,6 +83,7 @@ tokenize.nexus <- function (stext.in) {
 	    i <- j + 1
 	} else if (is.word[i]) {
 	    j <- word.end[i]
+	    if (is.na(j)) { j <- length(stext) + 1 }
 	    c <- c + 1
 	    pos[c] <- i
 	    token[c] <- "W"

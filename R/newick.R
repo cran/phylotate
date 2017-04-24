@@ -25,8 +25,8 @@
 ########################################################################
 
 parse.newick <- function (tok) {
-    # Strip commas (we don't need them any more)
-    tok <- tok[tok$token != ",",]
+    # Strip commas and semicolons (we don't need them any more)
+    tok <- tok[(tok$token != ",") & (tok$token != ";"),]
 
     # Attach distances to their preceeding tokens
     is.dist <- (tok$token == ":") & c((tok$token == "W")[2:nrow(tok)], FALSE)
@@ -43,9 +43,11 @@ parse.newick <- function (tok) {
     Ntotal <- Nnode + Ntip
 
     # Assign node numbers. Preserve original numbering on tips if
-    # possible
+    # possible. Node numbers for leaves are attached to W tokens. Node
+    # numbers for non-leaves are attached to ( tokens. The remaining
+    # type of token, ), has no node number attached.
     m <- tok$token == "W"
-    m.tn <- as.integer(tok$text[m])
+    m.tn <- suppressWarnings(as.integer(tok$text[m]))
     if (sum(duplicated(m.tn)) || (min(m.tn) < 1) || (max(m.tn) > Ntip)) {
 	warning("renumbering non-contiguous tips")
 	m.tn <- 1:Ntip
@@ -59,7 +61,8 @@ parse.newick <- function (tok) {
     node.index <- rep(NA, Ntotal)
     node.index[tok$node[m]] <- (1:nrow(tok))[m]
 
-    # Assign parentage, copy attributes up
+    # Assign parentage and copy attributes from ) tokens (distance,
+    # etc.) to the matching ( tokens.
     node.parent <- rep(NA, Ntotal)
     p <- NA
     for (i in 1:nrow(tok)) {
@@ -80,7 +83,7 @@ parse.newick <- function (tok) {
 
     if (!is.na(p)) { token.error(tok, nrow(tok), "unbalanced parentheses") }
 
-    # List of children in post-order
+    # List of children in pre-order
     po <- tok$node[!is.na(tok$node)]
     po.children <- po[!is.na(node.parent[po])]
 

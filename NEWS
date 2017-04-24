@@ -1,0 +1,7 @@
+phylotate v1.1 (Release date: 2017-04-24)
+=========================================
+
+  * Made the Newick parser more tolerant, so that it doesn't choke on
+    files ending with semicolons or files with distance values attached
+    to the root node. Files produced by RAxML should now be parsed
+    correctly.
