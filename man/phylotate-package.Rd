@@ -20,5 +20,6 @@
   The functions you probably want to use for most things are
   \code{\link{read_annotated}} and \code{\link{write_annotated}}.
 }
-\author{Daniel Beer \email{dlbeer@gmail.com}}
+\author{Daniel Beer \email{dlbeer@gmail.com},
+Anusha Beer \email{anbeer29@gmail.com}}
 \keyword{phylo}

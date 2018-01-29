@@ -1,3 +1,9 @@
+phylotate v1.2 (Release date: 2018-01-30)
+=========================================
+
+  * Added mb_attrs() function for extracting MrBayes attributes in
+    tabular form, suitable for binding for use with ggtree.
+
 phylotate v1.1 (Release date: 2017-04-24)
 =========================================
 
