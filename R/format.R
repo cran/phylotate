@@ -26,14 +26,15 @@ format.parsers <- list(
 )
 
 format.printers <- list(
-    "newick" = print.newick,
-    "nexus"  = print.nexus
+    "newick"       = print.newick,
+    "newick.named" = print.newick.named,
+    "nexus"        = print.nexus
 )
 
 parse_annotated <- function (str, format="nexus") {
     p <- format.parsers[[format]]
     if (is.null(p)) {
-	stop(sprintf("unknown format: %s", format))
+        stop(sprintf("unknown format: %s", format))
     }
 
     p(tokenize.nexus(str))
@@ -43,7 +44,7 @@ print_annotated <- function (tree, format="nexus") {
     p <- format.printers[[format]]
 
     if (is.null(p)) {
-	stop(sprintf("unknown format: %s", format))
+        stop(sprintf("unknown format: %s", format))
     }
 
     out <- NULL

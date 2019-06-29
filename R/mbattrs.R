@@ -24,21 +24,21 @@
 # Given an annotated tree produced by MrBayes, return a dataframe
 mb_attrs <- function (tree) {
     lrange <- gsub("^.*[&,]length_95%HPD=\\{([^}]*)\\}.*$", "\\1",
-		   tree$node.distance.comment)
+                   tree$node.distance.comment)
     data.frame(
-	prob = as.numeric(gsub(
-		"^.*[&,]prob=([^,]*).*$", "\\1",
-		tree$node.comment)),
-	prob_stddev = as.numeric(gsub(
-		"^.*[&,]prob_stddev=([^,]*).*$", "\\1",
-		tree$node.comment)),
-	length_mean = as.numeric(gsub(
-		"^.*[&,]length_mean=([^,]*).*$", "\\1",
-		tree$node.distance.comment)),
-	length_median = as.numeric(gsub(
-		"^.*[&,]length_median=([^,]*).*$", "\\1",
-		tree$node.distance.comment)),
-	length_95_HPD_low = gsub(",.*$", "", lrange),
-	length_95_HPD_high = gsub("^[^,]*,", "", lrange)
+        prob = as.numeric(gsub(
+                "^.*[&,]prob=([^,]*).*$", "\\1",
+                tree$node.comment)),
+        prob_stddev = as.numeric(gsub(
+                "^.*[&,]prob_stddev=([^,]*).*$", "\\1",
+                tree$node.comment)),
+        length_mean = as.numeric(gsub(
+                "^.*[&,]length_mean=([^,]*).*$", "\\1",
+                tree$node.distance.comment)),
+        length_median = as.numeric(gsub(
+                "^.*[&,]length_median=([^,]*).*$", "\\1",
+                tree$node.distance.comment)),
+        length_95_HPD_low = gsub(",.*$", "", lrange),
+        length_95_HPD_high = gsub("^[^,]*,", "", lrange)
     )
 }

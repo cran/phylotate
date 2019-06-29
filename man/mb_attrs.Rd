@@ -17,7 +17,7 @@ mb_attrs(tree)
 \details{
   The returned dataframe contains one row per node, and one column per
   attribute. The attributes parsed are \code{prob}, \code{prob_stddev},
-  \code{length_mean}, \code{length_media}, \code{length_95_HPD_low},
+  \code{length_mean}, \code{length_median}, \code{length_95_HPD_low},
   and \code{length_95_HPD_high}.
 
   Attributes which are derivable from the others are not parsed (for example,

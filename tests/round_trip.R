@@ -24,30 +24,55 @@ library(phylotate)
 
 test.eq.phylo <- function (test.data, test.data2) {
     for (e in c("edge", "edge.length", "Nnode", "tip.label",
-		"node.comment", "node.distance.comment")) {
-	e1 <- test.data[[e]]
-	e2 <- test.data2[[e]]
-	r <- test.data[[e]] != test.data2[[e]]
-	r[is.na(e1)] <- TRUE
-	r[is.na(e2)] <- TRUE
-	r[is.na(e1) & is.na(e2)] <- FALSE
-	if (sum(r) > 0) {
-	    print("")
-	    print(e1)
-	    print(e2)
-	    stop(sprintf("%s doesn't match", e))
-	}
+                "node.comment", "node.distance.comment")) {
+        e1 <- test.data[[e]]
+        e2 <- test.data2[[e]]
+        r <- test.data[[e]] != test.data2[[e]]
+        r[is.na(e1)] <- TRUE
+        r[is.na(e2)] <- TRUE
+        r[is.na(e1) & is.na(e2)] <- FALSE
+        if (sum(r) > 0) {
+            print("")
+            print(e1)
+            print(e2)
+            stop(sprintf("%s doesn't match", e))
+        }
     }
+}
+
+test.newick.named <- function () {
+    test.str <- paste0(
+        "(1[Z]:100[Q],((ABC,((8,(7,(Xyz,(5,(4,(2:200,3:300)))))),(9,10))),",
+        "((22,((18,(17,(16,",
+        "(15,(14,(12,13)))))),(21:2100,(Foo,20)))),(23,24))),(53,(52,(((27,",
+        "(25,26)),(30,(28,29))),(((41[X]:4100[D],(40,(39,(((31,(34,(32,33))),",
+        "(35,36)),(37[Y],38))))),((44,(42,43[A])),(45,46))),(51,(50,(49,(47,",
+        "48)))))))))[XYZ]")
+    print(test.str)
+
+    test.data <- parse_annotated(test.str, format="newick")
+    str(test.data)
+
+    test.str2 <- print_annotated(test.data, format="newick.named")
+    print(test.str2)
+    if (test.str != test.str2) { stop("Strings don't match!") }
+
+    test.data2 <- parse_annotated(test.str2, format="newick")
+    str(test.data2)
+
+    test.eq.phylo(test.data, test.data2)
+
+    print("All ok")
 }
 
 test.newick <- function () {
     test.str <- paste0(
-	"(1[Z]:100[Q],((11,((8,(7,(6,(5,(4,(2:200,3:300)))))),(9,10))),",
-	"((22,((18,(17,(16,",
-	"(15,(14,(12,13)))))),(21:2100,(19,20)))),(23,24))),(53,(52,(((27,",
-	"(25,26)),(30,(28,29))),(((41[X]:4100[D],(40,(39,(((31,(34,(32,33))),",
-	"(35,36)),(37[Y],38))))),((44,(42,43[A])),(45,46))),(51,(50,(49,(47,",
-	"48)))))))))[XYZ]")
+        "(1[Z]:100[Q],((11,((8,(7,(6,(5,(4,(2:200,3:300)))))),(9,10))),",
+        "((22,((18,(17,(16,",
+        "(15,(14,(12,13)))))),(21:2100,(19,20)))),(23,24))),(53,(52,(((27,",
+        "(25,26)),(30,(28,29))),(((41[X]:4100[D],(40,(39,(((31,(34,(32,33))),",
+        "(35,36)),(37[Y],38))))),((44,(42,43[A])),(45,46))),(51,(50,(49,(47,",
+        "48)))))))))[XYZ]")
     print(test.str)
 
     test.data <- parse_annotated(test.str, format="newick")
@@ -72,7 +97,7 @@ test.nexus <- function () {
     str(test)
     test$edge.length <- round(test$edge.length * 100)
     if (length(test$tip.label) < 1) {
-	stop("missing tips")
+        stop("missing tips")
     }
 
     n1 <- print_annotated(test, format="nexus")
@@ -92,3 +117,4 @@ test.nexus <- function () {
 
 test.newick()
 test.nexus()
+test.newick.named()

@@ -65,36 +65,36 @@ tokenize.nexus <- function (stext.in) {
     i <- 1
     c <- 0
     while (i <= length(stext)) {
-	i <- whitespace.end[i]
-	if (is.na(i)) { break }
+        i <- whitespace.end[i]
+        if (is.na(i)) { break }
 
-	if (stext[i] == "[") {
-	    j <- comment.end[i]
+        if (stext[i] == "[") {
+            j <- comment.end[i]
 
-	    if (is.na(j)) {
-		stop(sprintf("Line %d, column %d: unterminated comment",
-			     row[i], col[i]))
-	    }
+            if (is.na(j)) {
+                stop(sprintf("Line %d, column %d: unterminated comment",
+                             row[i], col[i]))
+            }
 
-	    if ((c > 0) && is.na(comment[c])) {
-		comment[c] <- paste0(stext[(i+1) : (j-1)], collapse="")
-	    }
+            if ((c > 0) && is.na(comment[c])) {
+                comment[c] <- paste0(stext[(i+1) : (j-1)], collapse="")
+            }
 
-	    i <- j + 1
-	} else if (is.word[i]) {
-	    j <- word.end[i]
-	    if (is.na(j)) { j <- length(stext) + 1 }
-	    c <- c + 1
-	    pos[c] <- i
-	    token[c] <- "W"
-	    text[c] <- paste0(stext[i : (j-1)], collapse="")
-	    i <- j
-	} else {
-	    c <- c + 1
-	    pos[c] <- i
-	    token[c] <- stext[i]
-	    i <- i + 1
-	}
+            i <- j + 1
+        } else if (is.word[i]) {
+            j <- word.end[i]
+            if (is.na(j)) { j <- length(stext) + 1 }
+            c <- c + 1
+            pos[c] <- i
+            token[c] <- "W"
+            text[c] <- paste0(stext[i : (j-1)], collapse="")
+            i <- j
+        } else {
+            c <- c + 1
+            pos[c] <- i
+            token[c] <- stext[i]
+            i <- i + 1
+        }
     }
 
     # Trim vectors
@@ -104,13 +104,13 @@ tokenize.nexus <- function (stext.in) {
     comment <- comment[1:c]
 
     data.frame(
-	pos = pos,
-	row = row[pos],
-	col = col[pos],
-	token = token,
-	text = text,
-	comment = comment,
-	stringsAsFactors = FALSE
+        pos = pos,
+        row = row[pos],
+        col = col[pos],
+        token = token,
+        text = text,
+        comment = comment,
+        stringsAsFactors = FALSE
     )
 }
 

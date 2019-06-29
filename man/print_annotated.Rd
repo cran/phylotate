@@ -6,11 +6,15 @@ print_annotated(tree, format="nexus")
 }
 \arguments{
   \item{tree}{a phylogentic tree, with optional annotations}
-  \item{format}{a format specifier; either \code{"nexus"} or \code{"newick"}}
+  \item{format}{a format specifier; either \code{"nexus"},
+    \code{"newick"}, or \code{"newick.named"}}
 }
 \description{
   This function takes the given tree object and returns a string
-  representing the tree in the requested format.
+  representing the tree in the requested format. The difference between
+  the \code{"newick"} and \code{"newick.named"} formats is that the
+  former uses only node numbers in its output, whereas the latter uses
+  the tip labels (sanitized and deduplicated if necessary).
 }
 \value{
   a string containing a serialized tree.

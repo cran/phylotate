@@ -49,8 +49,7 @@ parse.newick <- function (tok) {
     m <- tok$token == "W"
     m.tn <- suppressWarnings(as.integer(tok$text[m]))
     if (sum(duplicated(m.tn)) || (min(m.tn) < 1) || (max(m.tn) > Ntip)) {
-	warning("renumbering non-contiguous tips")
-	m.tn <- 1:Ntip
+        m.tn <- 1:Ntip
     }
     tok$node <- rep(NA, nrow(tok))
     tok$node[m] <- m.tn
@@ -66,19 +65,19 @@ parse.newick <- function (tok) {
     node.parent <- rep(NA, Ntotal)
     p <- NA
     for (i in 1:nrow(tok)) {
-	if (tok$token[i] == "(") {
-	    node.parent[tok$node[i]] <- p
-	    p <- tok$node[i]
-	} else if (tok$token[i] == ")") {
-	    if (is.na(p)) { token.error(tok, i, "unbalanced parentheses") }
-	    cols <- c("distance", "comment", "distance.comment")
-	    tok[node.index[p],cols] <- tok[i,cols]
-	    p <- node.parent[p]
-	} else if (tok$token[i] == "W") {
-	    node.parent[tok$node[i]] <- p
-	} else {
-	    token.error(tok, i, "unexpected token")
-	}
+        if (tok$token[i] == "(") {
+            node.parent[tok$node[i]] <- p
+            p <- tok$node[i]
+        } else if (tok$token[i] == ")") {
+            if (is.na(p)) { token.error(tok, i, "unbalanced parentheses") }
+            cols <- c("distance", "comment", "distance.comment")
+            tok[node.index[p],cols] <- tok[i,cols]
+            p <- node.parent[p]
+        } else if (tok$token[i] == "W") {
+            node.parent[tok$node[i]] <- p
+        } else {
+            token.error(tok, i, "unexpected token")
+        }
     }
 
     if (!is.na(p)) { token.error(tok, nrow(tok), "unbalanced parentheses") }
@@ -89,14 +88,14 @@ parse.newick <- function (tok) {
 
     # Make a phylo object
     p <- list(
-	edge			= matrix(as.integer(c(node.parent[po.children],
-						      po.children)),
-					 nrow = length(po.children), ncol = 2),
-	edge.length		= tok$distance[node.index[po.children]],
-	Nnode			= Nnode,
-	tip.label		= tok$text[node.index[1:Ntip]],
-	node.comment		= tok$comment[node.index[1:Ntotal]],
-	node.distance.comment	= tok$distance.comment[node.index[1:Ntotal]]
+        edge			= matrix(as.integer(c(node.parent[po.children],
+                                                      po.children)),
+                                         nrow = length(po.children), ncol = 2),
+        edge.length		= tok$distance[node.index[po.children]],
+        Nnode			= Nnode,
+        tip.label		= tok$text[node.index[1:Ntip]],
+        node.comment		= tok$comment[node.index[1:Ntotal]],
+        node.distance.comment	= tok$distance.comment[node.index[1:Ntotal]]
     )
 
     class(p) <- "phylo"
@@ -108,25 +107,17 @@ parse.newick <- function (tok) {
 # Newick printer
 ########################################################################
 
-print.newick <- function (phy, printer, Ntip=NA) {
+print.newick.labels <- function (phy, printer, labels) {
     if (class(phy) != "phylo") {
-	stop("print.newick requires a phylo object")
+        stop("print.newick requires a phylo object")
     }
 
-    if (is.na(Ntip)) {
-	if (is.null(phy$tip.label)) {
-	    stop("no tip labels found: you need to specify Ntip")
-	}
-
-	Ntip <- length(phy$tip.label)
-    }
-
-    Ntotal <- Ntip + phy$Nnode
+    Ntotal <- length(labels) + phy$Nnode
 
     # Map: node -> distance from parent
     node.distance <- rep(NA, Ntotal)
     if (!is.null(phy$edge.length)) {
-	node.distance[phy$edge[,2]] <- phy$edge.length
+        node.distance[phy$edge[,2]] <- phy$edge.length
     }
 
     # Map: node -> parent
@@ -153,48 +144,81 @@ print.newick <- function (phy, printer, Ntip=NA) {
     # Select root
     n <- m[is.na(m.parent)]
     if (length(n) != 1) {
-	stop("Tree must contain exactly one root node")
+        stop("Tree must contain exactly one root node")
     }
 
     # Emit attributes for a given node
     finish.node <- function (n) {
-	if (!is.null(phy$node.comment)) {
-	    c <- phy$node.comment[n]
-	    if (!is.na(c)) { printer(sprintf("[%s]", c)) }
-	}
+        if (!is.null(phy$node.comment)) {
+            c <- phy$node.comment[n]
+            if (!is.na(c)) { printer(sprintf("[%s]", c)) }
+        }
 
-	c <- node.distance[n]
-	if (!is.na(c)) {
-	    printer(sprintf(":%g", c))
-	    if (!is.null(phy$node.distance.comment)) {
-		c <- phy$node.distance.comment[n]
-		if (!is.na(c)) { printer(sprintf("[%s]", c)) }
-	    }
-	}
+        c <- node.distance[n]
+        if (!is.na(c)) {
+            printer(sprintf(":%g", c))
+            if (!is.null(phy$node.distance.comment)) {
+                c <- phy$node.distance.comment[n]
+                if (!is.na(c)) { printer(sprintf("[%s]", c)) }
+            }
+        }
     }
 
     # Traverse tree
     depth <- 0
     p <- NA
     while (!(is.na(n) && is.na(p))) {
-	if (is.na(n)) {
-	    printer(")")
-	    finish.node(p)
-	    n <- node.sibling[p]
-	    p <- node.parent[p]
-	    if (!is.na(n)) { printer(",") }
-	    depth <- depth - 1
-	} else if (n <= Ntip) {
-	    printer(sprintf("%d", n))
-	    finish.node(n)
-	    n <- node.sibling[n]
-	    if (!is.na(n)) { printer(",") }
-	} else {
-	    printer("(")
-	    p <- n
-	    n <- node.first.child[n]
-	    depth <- depth + 1
-	    if (depth > Ntotal) { stop("loop in tree") }
-	}
+        if (is.na(n)) {
+            printer(")")
+            finish.node(p)
+            n <- node.sibling[p]
+            p <- node.parent[p]
+            if (!is.na(n)) { printer(",") }
+            depth <- depth - 1
+        } else if (n <= length(labels)) {
+            printer(labels[[n]])
+            finish.node(n)
+            n <- node.sibling[n]
+            if (!is.na(n)) { printer(",") }
+        } else {
+            printer("(")
+            p <- n
+            n <- node.first.child[n]
+            depth <- depth + 1
+            if (depth > Ntotal) { stop("loop in tree") }
+        }
     }
+}
+
+print.newick <- function (phy, printer, Ntip=NA) {
+    if (class(phy) != "phylo") {
+        stop("print.newick requires a phylo object")
+    }
+
+    if (is.na(Ntip)) {
+        if (is.null(phy$tip.label)) {
+            stop("no tip labels found: you need to specify Ntip")
+        }
+
+        Ntip <- length(phy$tip.label)
+    }
+
+    print.newick.labels(phy, printer, as.character(c(1:Ntip)))
+}
+
+print.newick.named <- function (phy, printer) {
+    if (class(phy) != "phylo") {
+        stop("print.newick requires a phylo object")
+    }
+
+    if (is.null(phy$tip.label)) {
+        stop("no tip labels found")
+    }
+
+    labels <- gsub("[^A-Za-z0-9_]", "_", phy$tip.label)
+    disambiguated <- sprintf("%d.%s", c(1:length(labels)), labels)
+    d <- duplicated(labels)
+    labels[d] <- disambiguated[d]
+
+    print.newick.labels(phy, printer, labels)
 }
